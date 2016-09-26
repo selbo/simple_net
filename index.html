@@ -4,20 +4,26 @@
 
       <script type="text/javascript">
           var ws=null;
+          ws = new WebSocket("ws://localhost:8000");
           function led_on(){
-             ws.send({"led":"on"});
-          }
-          function led_on(){
-             ws.send({"led":"off"});
-          }
 
+             ws.send("{'led':'on'}");
+          }
+          function led_off(){
+             ws.send("{'led':'off'}");
+          }
+               ws.onmessage = function (evt)
+               {
+                  var received_msg = evt.data;
+                  alert("Message is received..."+received_msg);
+               };
          function WebSocketTest()
          {
             if ("WebSocket" in window)
             {
                // Let us open a web socket
-               ws = new WebSocket("ws://localhost:8000");
-
+  
+       
                ws.onopen = function()
                {
                   // Web Socket is connected, send data using send()
