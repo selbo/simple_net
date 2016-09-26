@@ -4,17 +4,19 @@
 
       <script type="text/javascript">
           var ws=null;
-          function Send(){
-          ws.onopen();
+          function led_on(){
+             ws.send({"led":"on"});
           }
+          function led_on(){
+             ws.send({"led":"off"});
+          }
+
          function WebSocketTest()
          {
             if ("WebSocket" in window)
             {
-               alert("WebSocket is supported by your Browser!");
-
                // Let us open a web socket
-               ws = new WebSocket("ws://localhost:13254");
+               ws = new WebSocket("ws://localhost:8000");
 
                ws.onopen = function()
                {
@@ -49,7 +51,8 @@
 
       <div id="sse">
          <a href="javascript:WebSocketTest()">Run WebSocket</a>
-          <a href="javascript:Send()"> Send</a>
+          <a href="javascript:led_on()"> led_on</a>
+          <a href="javascript:led_off()"> led_off</a>
       </div>
 
    </body>
