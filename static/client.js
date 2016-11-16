@@ -46,7 +46,7 @@ myApp.controller("MainController",function($scope, $timeout,farmService){
         $scope.cows = farm.cows;
         myTimer = $timeout($scope.onTimeout,1000);
     }
-    $scope.ws = new WebSocket("ws://104.198.196.211:8000");
+    $scope.ws = new WebSocket("ws://130.211.184.58:8000");
     //ws = new WebSocket("ws://localhost:8000");
     console.log("Hello debugger");
     /*ws.onmessage = function (evt)
@@ -63,6 +63,7 @@ myApp.controller("MainController",function($scope, $timeout,farmService){
     $scope.buyCow = function(){
         $scope.cows.push(new Cow());
     }
+
     $scope.SendCommand=function()
     {
         obj={};

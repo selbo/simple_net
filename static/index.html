@@ -1,40 +1,193 @@
 <!DOCTYPE HTML>
 <html>
-   <head>
-       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
-        <script src="/static/main.js"></script>
-      <script type="text/javascript">
-	</script>
-   </head>
-   <body>
+	<head>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.js"></script>
+		<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+			<script src="/semantic/dist/semantic.min.js"></script>
+			<script src="/static/angulargrid/angulargrid.js"></script>
+			
+			<link rel="stylesheet" type="text/css" href="/static/main.css">
+				<!-- Core CSS file -->
+				<link rel="stylesheet" href="/static/photoswipe/dist/photoswipe.css"> 
 
-      <div id="sse">
-         <a href="javascript:WebSocketTest()">Run WebSocket</a>
-          <a href="javascript:led_on()"> Send</a>
+					<!-- Skin CSS file (styling of UI - buttons, caption, etc.)
+				 In the folder of skin CSS file there are also:
+				 - .png and .svg icons sprite, 
+				 - preloader.gif (for browsers that do not support CSS animations) -->
+					<link rel="stylesheet" href="/static/photoswipe/dist/default-skin/default-skin.css"> 
 
-      </div>
-    <div ng-app="myApp">
-  <div ng-controller="MainController">
-    <button ng-click="SendCommand()">SendCommand</button>
-    <md-input-container class="md-block" flex-gt-sm>
-            <label>Command</label>
-            <input ng-model="command">
-          </md-input-container>
-      <md-input-container class="md-block" flex-gt-sm>
-            <label>Data</label>
-            <input ng-model="data">
-          </md-input-container>
-    <div id="farm">
-        <div class="grass" ng-repeat="g in grass">
-            <img src="https://drive.google.com/uc?export=view&id=0B1mQfOwV0VUHWWhiRmM5bVlIczA" />
-        </div>
-        <div class="cow" ng-repeat="c in cows">
-           <img src="https://drive.google.com/uc?export=view&id=0B1mQfOwV0VUHdTdBdHBibVM0UGM" />
-        </div>
-        <br style="clear:both"/>
-    </div>
-  </div>
-</div>
+						<!-- Core JS file -->
+						<script src="/static/photoswipe/dist/photoswipe.min.js"></script> 
 
-   </body>
-</html>
+						<!-- UI JS file -->
+						<script src="/static/photoswipe/dist/photoswipe-ui-default.min.js"></script> 
+						<!-- angular tumbs  -->
+						<!-- <script src="/static/angular-thumbnail-grid/js/modernizr.custom.js"></script>
+						<script src="/static/angular-thumbnail-grid/js/angular-thumbnail-grid.js"></script>
+						<script src="/static/angular-thumbnail-grid/js/grid.js"></script> -->
+					<script src="/static/main.js"></script>	
+					</head>
+					<body>
+						<div ng-app="selbo">
+							<div ng-controller="slbo_ctrl">  
+								<div class="ui one column grid">
+									<div class="row">
+										<div class="sixteen wide column">
+											<div class="ui two column grid">
+												<div class="ui eight column grid">
+													<div class="column">
+													</div>
+													<div class="column">
+														<button class="circular ui icon button" ng-click='toggle_light()'>
+															<i class="icon idea" ng-show="led_state=='off'"></i>
+															<i class="icon power"  ng-show="led_state=='on'"></i>
+														</button>
+													</div>
+													<div class="column">
+														<button class="circular ui icon button" ng-click='take_picture()'>
+															<i class="icon photo"></i>
+														</button>
+													</div>
+													<div class="column">
+														<button class="circular ui icon button" ng-click='full_screen()'>
+															<i class="icon desktop"></i>
+														</button>
+													</div>
+													<div class="column">
+														<button class="circular ui icon button" ng-click='toggle_nav()'>
+															<i class="icon play" ng-show="nav=='idle'"></i>
+															<i class="icon pause"  ng-show="nav=='active'"></i>
+															<!-- <img class="toolbar_button" src='/static/img/pause.png' ng-show="nav=='active'" />
+												<img class="toolbar_button" src='/static/img/play.png' ng-show="nav=='idle'" /> -->
+														</button>
+													</div>
+												</div>
+												<div class="ui eight column grid">
+													<div class="column">
+														<img class="toolbar_button" src='/static/img/car.png' ng-show="nav==active" />
+														<img class="toolbar_button" src='/static/img/stop.png' ng-show="nav==idle" />
+													</div>
+													<div class="column">
+														<img class="toolbar_button" src='/static/img/online.png' ng-show="online==true" />
+														<img class="toolbar_button" src='/static/img/offline.png' ng-show="online==false" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="sixteen wide column">
+											<img id="main_img" style="height:400px;width:711px" ng-src="{{last_captured_img_url}}" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="sixteen wide column">
+											<ul class="dynamic-grid" angular-grid="pics" grid-width="300" gutter-size="10" angular-grid-id="gallery" refresh-on-img-load="false" >
+												<li data-ng-repeat="pic in pics" class="grid" data-ng-clock>
+													<img src="{{pic.url}}" class="grid-img" data-actual-width = "{{pic.width}}"  data-actual-height="{{pic.height}}" />
+												</li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="sixteen wide column">
+											<!-- Root element of PhotoSwipe. Must have class pswp. -->
+											<div class="pswp" tabindex="-1" >
+
+												<!-- Background of PhotoSwipe. 
+													It's a separate element as animating opacity is faster than rgba(). -->
+												<div class="pswp__bg"></div>
+
+												<!-- Slides wrapper with overflow:hidden. -->
+												<div class="pswp__scroll-wrap">
+
+													<!-- Container that holds slides. 
+														PhotoSwipe keeps only 3 of them in the DOM to save memory.
+														Don't modify these 3 pswp__item elements, data is added later on. -->
+													<div class="pswp__container">
+														<div class="pswp__item"></div>
+														<div class="pswp__item"></div>
+														<div class="pswp__item"></div>
+													</div>
+
+													<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+													<div class="pswp__ui pswp__ui--hidden">
+
+														<div class="pswp__top-bar">
+
+															<!--  Controls are self-explanatory. Order can be changed. -->
+
+															<div class="pswp__counter"></div>
+
+															<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+															<button class="pswp__button pswp__button--share" title="Share"></button>
+
+															<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+															<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+															<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+															<!-- element will get class pswp__preloader--active when preloader is running -->
+															<div class="pswp__preloader">
+																<div class="pswp__preloader__icn">
+																	<div class="pswp__preloader__cut">
+																		<div class="pswp__preloader__donut"></div>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+														<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+															<div class="pswp__share-tooltip"></div> 
+														</div>
+
+														<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+														</button>
+
+														<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+														</button>
+
+														<div class="pswp__caption">
+															<div class="pswp__caption__center"></div>
+														</div>
+
+													</div>
+
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<script type="text/javascript">
+									var pswpElement = document.querySelectorAll('.pswp')[0];
+
+									// build items array
+									var items = [
+										{
+											src: "http://"+window.location.host+"/photos/selbo.jpg",
+											w: 600,
+											h: 400
+										}
+									];
+
+									// define options (if needed)
+									var options = {
+										// optionName: 'option value'
+										// for example:
+										index: 0, // start at first slide
+										//focus: false,
+										modal:false 
+									};
+
+									// Initializes and opens PhotoSwipe
+									var gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+									gallery.init();
+								</script>   
+							</body>
+						</html>
+						
